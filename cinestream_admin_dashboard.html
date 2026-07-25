@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CineStream Admin - Manage Movies</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #e5e2e1;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.6);
+            backdrop-filter: blur(32px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #131313;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #353534;
+            border-radius: 10px;
+        }
+        .movie-row:hover {
+            background-color: rgba(229, 9, 20, 0.05);
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#e5e2e1",
+                    "on-error": "#690005",
+                    "on-primary": "#690003",
+                    "on-primary-fixed": "#410001",
+                    "on-tertiary": "#303030",
+                    "surface-container-high": "#2a2a2a",
+                    "on-tertiary-fixed": "#1b1c1c",
+                    "surface-container": "#201f1f",
+                    "on-error-container": "#ffdad6",
+                    "tertiary": "#c8c6c6",
+                    "error-container": "#93000a",
+                    "on-surface": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "on-primary-container": "#fff7f6",
+                    "on-secondary-fixed-variant": "#454747",
+                    "surface-variant": "#353534",
+                    "on-secondary": "#2f3131",
+                    "secondary-container": "#454747",
+                    "tertiary-fixed": "#e4e2e1",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "surface-container-lowest": "#0e0e0e",
+                    "primary-fixed": "#ffdad5",
+                    "surface-tint": "#ffb4aa",
+                    "outline-variant": "#5e3f3b",
+                    "inverse-primary": "#c0000c",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary-fixed": "#e2e2e2",
+                    "on-tertiary-container": "#fbf8f8",
+                    "surface-dim": "#131313",
+                    "tertiary-fixed-dim": "#c8c6c6",
+                    "on-surface-variant": "#e9bcb6",
+                    "primary-fixed-dim": "#ffb4aa",
+                    "secondary": "#c6c6c7",
+                    "tertiary-container": "#737272",
+                    "outline": "#af8782",
+                    "inverse-surface": "#e5e2e1",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "on-secondary-container": "#b4b5b5",
+                    "primary": "#ffb4aa",
+                    "surface-container-highest": "#353534",
+                    "primary-container": "#e50914",
+                    "background": "#131313",
+                    "surface-bright": "#393939",
+                    "surface": "#131313",
+                    "error": "#ffb4ab",
+                    "on-primary-fixed-variant": "#930007",
+                    "on-tertiary-fixed-variant": "#474747"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter-mobile": "16px",
+                    "margin-mobile": "20px",
+                    "base": "8px",
+                    "margin-desktop": "60px",
+                    "container-max": "1440px",
+                    "gutter-desktop": "24px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-hero": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display-hero": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background">
+<!-- SideNavBar Integration -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container-lowest shadow-xl flex flex-col h-full py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="font-display-hero text-headline-md text-primary-container leading-none">CineStream</h1>
+<p class="text-on-surface-variant font-label-sm mt-2 opacity-70">Admin Panel</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard Tab (Inactive) -->
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<!-- Manage Movies Tab (Active) -->
+<a class="bg-primary-container text-on-primary-container rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 shadow-lg shadow-primary-container/20 translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="movie" style="font-variation-settings: 'FILL' 1;">movie</span>
+<span class="font-body-md text-body-md font-bold">Manage Movies</span>
+</a>
+<!-- Upload Assets Tab (Inactive) -->
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+<span class="font-body-md text-body-md">Upload Assets</span>
+</a>
+<!-- Categories Tab (Inactive) -->
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-body-md text-body-md">Categories</span>
+</a>
+</nav>
+<!-- Sidebar CTA -->
+<div class="px-4 mt-6">
+<button class="w-full py-3 px-4 bg-primary-container text-on-primary-container rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-primary-container/30">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                Add New Movie
+            </button>
+</div>
+<!-- Sidebar Footer -->
+<div class="mt-auto border-t border-surface-variant pt-4">
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-body-md text-body-md">Logout</span>
+</a>
+<div class="mx-4 mt-4 flex items-center gap-3 px-2 py-2 bg-surface-container rounded-xl">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a modern tech administrator with short dark hair, wearing a sleek black turtleneck. The lighting is dramatic and cinematic with a hint of red rim light, set against a dark, tech-focused background. High quality photography style, sharp focus, shallow depth of field." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz9YpgpudbfrRmrDzICZRxw-zFxp-PudA4uTiHN4KfiXZ-bTkCDvc0n1uGLeeTgmHwMGxUNNQ2cw-jl1Jo2IbGODXLbsOnEqkOLcuqm5NZRDgk8_SJ0U7WVC92KbE1mSoH-mcnDW5d-RhnxY87kdBNzwnLD7P2y5ZJdp3L_JSLCSvmcErAMhP3EdvF5I55WRhnDylDwHpWU3vXxntroGjCngRmXpKD7e_R-NkeawqxhEwiyjxcBvNe57G3dvU1JxQnKd0VMkpW5xs"/>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface text-[10px]">Admin User</span>
+<span class="font-label-sm text-on-surface-variant text-[9px] opacity-60">Manager</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- Top Bar / Page Header -->
+<header class="flex justify-between items-center px-margin-desktop py-8 sticky top-0 bg-background/80 backdrop-blur-xl z-40 border-b border-white/5">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background tracking-tight">Manage Movies</h2>
+<p class="text-on-surface-variant text-body-md opacity-80">Oversee your digital library and streaming assets.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-xl group-focus-within:text-primary transition-colors" data-icon="search">search</span>
+<input class="bg-surface-container-low border border-white/10 rounded-full pl-10 pr-4 py-2 text-body-md w-64 focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-transparent transition-all" placeholder="Search database..." type="text"/>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-variant p-2 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary-container rounded-full ring-2 ring-background"></span>
+</button>
+</div>
+</header>
+<div class="px-margin-desktop py-8 space-y-gutter-desktop max-w-container-max mx-auto">
+<!-- Statistics Bar - Bento Grid Style -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="glass-panel p-6 rounded-xl flex items-center justify-between group hover:border-primary/30 transition-all duration-300">
+<div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-widest mb-1">Total Content</p>
+<h3 class="text-display-hero text-[32px] font-bold text-on-background">1,482</h3>
+<p class="text-green-500 text-label-sm flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> +24 this week
+                        </p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="movie">movie</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-center justify-between group hover:border-primary/30 transition-all duration-300">
+<div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-widest mb-1">Total Stream Views</p>
+<h3 class="text-display-hero text-[32px] font-bold text-on-background">842.5K</h3>
+<p class="text-green-500 text-label-sm flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 12% increase
+                        </p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="visibility">visibility</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-center justify-between group hover:border-primary/30 transition-all duration-300">
+<div>
+<p class="text-on-surface-variant font-label-sm uppercase tracking-widest mb-1">Telegram Clicks</p>
+<h3 class="text-display-hero text-[32px] font-bold text-on-background">12,904</h3>
+<p class="text-blue-400 text-label-sm flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span> Active Redirects
+                        </p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-[#0088CC]/10 flex items-center justify-center text-[#0088CC] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="send">send</span>
+</div>
+</div>
+</section>
+<!-- Filters & Actions -->
+<div class="flex flex-wrap items-center justify-between gap-4 py-2">
+<div class="flex items-center gap-3">
+<select class="bg-surface-container-low border border-white/10 rounded-lg px-4 py-2 font-label-sm focus:ring-primary-container focus:border-transparent text-on-surface-variant cursor-pointer">
+<option>All Genres</option>
+<option>Action</option>
+<option>Sci-Fi</option>
+<option>Drama</option>
+<option>Horror</option>
+</select>
+<select class="bg-surface-container-low border border-white/10 rounded-lg px-4 py-2 font-label-sm focus:ring-primary-container focus:border-transparent text-on-surface-variant cursor-pointer">
+<option>Release Year</option>
+<option>2024</option>
+<option>2023</option>
+<option>2022</option>
+</select>
+<button class="flex items-center gap-2 px-4 py-2 text-label-sm text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                        Advanced Filters
+                    </button>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-surface-container-high border border-white/5 px-4 py-2 rounded-lg font-label-sm hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="file_download">file_download</span>
+                        Export CSV
+                    </button>
+</div>
+</div>
+<!-- Movie Table Section -->
+<section class="glass-panel rounded-2xl overflow-hidden border border-white/5">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50 border-b border-white/10">
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">Thumbnail</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">Movie Title</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">Genre</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">Year</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px]">Status</th>
+<th class="px-6 py-4 font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px] text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="movie-row transition-all group">
+<td class="px-6 py-4">
+<div class="w-14 h-20 bg-surface-variant rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:scale-105 transition-transform duration-300">
+<img class="w-full h-full object-cover" data-alt="A high-contrast cinematic movie poster for a sci-fi epic featuring a neon-lit futuristic city and a solitary explorer in a space suit. The aesthetic uses deep purples and oranges, with dramatic lighting and a professional film industry graphic style. High fidelity digital art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhVertNHfZHnnLn-SznNnom9nkiK6zDLz1JqiO5ytGfSyi7j39WGn7q4Syij9sbDKjJJddo4tBaNF21k03Lty7a0FkBI2G4pdojL77UPTQ4BtbeLldtQT4HcN_WFEfnNF6YfhrjWpjovfO15dcwkogRfqHcwmbnlhDeTm8Ad282vWeApLQICp1Pk0IYz-Z75Y3CA4yfSHaFzzQeGkZQzHOF7-TJpCKonUaq3gHU2Wy6MR7Ep6mqK6lcbUGAIPymZ4vK31jHFnk8w0"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md text-on-background font-semibold group-hover:text-primary transition-colors">Interstellar Drift</span>
+<span class="text-label-sm text-on-surface-variant opacity-60">ID: CS-9821-X</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1">
+<span class="bg-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant">Sci-Fi</span>
+<span class="bg-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant">Adventure</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md">2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-green-500/10 text-green-500 border border-green-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Live
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all" title="Edit Movie">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all" title="Delete Movie">
+<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-white rounded-lg transition-all" title="View Options">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="movie-row transition-all group">
+<td class="px-6 py-4">
+<div class="w-14 h-20 bg-surface-variant rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:scale-105 transition-transform duration-300">
+<img class="w-full h-full object-cover" data-alt="A gritty and moody crime thriller movie poster showing a rain-slicked dark alleyway with a single yellow streetlamp illuminating a silhouette. The color palette is primarily deep charcoal and black with a pop of cinema red. Professional composition, noir aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY_iCiqqJZRw0NGaRBs49P___Bn_-Dw9ZaWJbnYs9NmPIZRb-6tO9U1wafotxJt7F18PtcJ5Gqv_wsJXvUbw9J8QUSmBaTL7X7ztPzZ_UZrpnF9Ik2h1SufNKA47Ldq0aVEDJ2lIDPN6ppxO58aX7pN0ol9foFh66IKH4HRyI-OtIY5JR1kAFSxkVbQPn_oUE6MQbG3oLe4BlZbz1Ob2pN5XHouSb3fnSXL2cs0s6JNexUmzyE3T77wrpA1vJqWbZuC2Q1bZHSLIQ"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md text-on-background font-semibold group-hover:text-primary transition-colors">Neon Shadow</span>
+<span class="text-label-sm text-on-surface-variant opacity-60">ID: CS-2234-P</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1">
+<span class="bg-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant">Crime</span>
+<span class="bg-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant">Thriller</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md">2023</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-green-500/10 text-green-500 border border-green-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Live
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-white rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="movie-row transition-all group">
+<td class="px-6 py-4">
+<div class="w-14 h-20 bg-surface-variant rounded-lg overflow-hidden ring-1 ring-white/10 group-hover:scale-105 transition-transform duration-300">
+<img class="w-full h-full object-cover" data-alt="An ethereal and bright fantasy movie poster featuring a floating island with ancient ruins and vibrant pink and purple foliage. High-key lighting, magical atmosphere, intricate detailing, professional film poster style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5HXUXNfLRuc8mSZh8cfVRgbtuYLkK7xTSvC18VbgKzlWwJgQKI80q9QJfxSi4aL5hwiRHCqq-m0zmnpu--sNiK1E6JPNNCzkRlS9WCa2cX_91NHmPhv5G0SpRTEemheZreXXsESUYqAg_VFlsWqHkoQBt3Yv4AhWTjfjfXCeTC5OK7sKfthiZ1e-x-G6ysggVObrXMVvLKB2gCjUQ8rqlaQFDXoCJdooSLTW2PAmZ4J8utm_55UfoK4hXw7aUzpfekZh1OOpVp4k"/>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md text-on-background font-semibold group-hover:text-primary transition-colors">The Last Haven</span>
+<span class="text-label-sm text-on-surface-variant opacity-60">ID: CS-4451-Y</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1">
+<span class="bg-surface-variant px-2 py-0.5 rounded text-[10px] font-label-sm text-on-surface-variant">Fantasy</span>
+</div>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md">2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Processing
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-white rounded-lg transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 flex items-center justify-between border-t border-white/10 bg-surface-container-low/30">
+<span class="text-label-sm text-on-surface-variant">Showing 1 to 10 of 1,482 movies</span>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg hover:bg-surface-variant text-on-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-primary-container text-on-primary-container font-label-sm text-sm">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-variant text-on-surface-variant font-label-sm text-sm transition-colors">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-variant text-on-surface-variant font-label-sm text-sm transition-colors">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-surface-variant text-on-surface-variant font-label-sm text-sm transition-colors">149</button>
+</div>
+<button class="p-2 rounded-lg hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer Segment -->
+<footer class="w-full py-12 px-margin-desktop mt-16 border-t border-surface-variant bg-surface-container-lowest">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<h4 class="font-display-hero text-headline-md text-primary-container leading-none mb-4">CineStream</h4>
+<p class="text-on-surface-variant text-label-sm max-w-xs">Premium entertainment management system. Built for speed, security, and global scale.</p>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 font-body-md">Resources</h5>
+<ul class="space-y-2">
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">API Documentation</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">Server Status</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">Support Desk</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 font-body-md">Legal</h5>
+<ul class="space-y-2">
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">DMCA Compliance</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-sm hover:underline decoration-primary" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-on-surface font-bold mb-4 font-body-md">Connect</h5>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-[#0088CC] hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-white hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="alternate_email">alternate_email</span>
+</a>
+</div>
+</div>
+</div>
+<div class="mt-12 text-center border-t border-white/5 pt-8">
+<p class="text-on-surface-variant text-label-sm opacity-50">© 2024 CineStream. All rights reserved. Secure Administrator Terminal.</p>
+</div>
+</footer>
+</main>
+<script>
+        // Simple interactivity for demonstration
+        document.querySelectorAll('.movie-row').forEach(row => {
+            row.addEventListener('click', () => {
+                // Potential ripple or activation effect
+            });
+        });
+
+        // Modal/Notification simulation
+        const addBtn = document.querySelector('button:contains("Add New Movie")');
+        if(addBtn) {
+            addBtn.addEventListener('click', () => {
+                console.log('Add movie modal triggered');
+            });
+        }
+    </script>
+</body></html>
